@@ -70,11 +70,11 @@ import "./Ownable.sol";
     */
     function register(address _address) public onlyOwner {
         require(workflowStatus == WorkflowStatus.RegisteringVoters, "La phase d\'enregistrement des electeurs est terminee !");
-      //ajouter le fait de ne pas pouvoir ajouter une adr 2x
-            voters.push(Voter(true, false, 0, false));
-            whitelistArray.push(_address);
-            whitelist[_address] = voters.length;
-            emit VoterRegistered(_address); 
+        require(whitelist[msg.sender] == 0, "Adresse enregistree !");
+        voters.push(Voter(true, false, 0, false));
+        whitelistArray.push(_address);
+        whitelist[_address] = voters.length;
+        emit VoterRegistered(_address);
         
     }
 
