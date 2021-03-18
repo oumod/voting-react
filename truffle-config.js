@@ -1,0 +1,37 @@
+const path = require("path");
+const HDWalletProvider = require('@truffle/hdwallet-provider');
+require('dotenv').config();
+
+module.exports = {
+  // See <http://truffleframework.com/docs/advanced/configuration>
+  // to customize your Truffle configuration!
+  contracts_build_directory: path.join(__dirname, "client/src/contracts"),
+  networks: {
+    ganache: {
+      host: "localhost",
+      port: 7545,
+      network_id: 5777,
+      from : "0xd7c60b532C28e74D672F2e3f040cA9A5E0b7139E"
+    },
+    ropsten: {
+      provider: function() {
+        return new HDWalletProvider(`${process.env.MNEMONIC}`, `https://ropsten.infura.io/v3/${process.env.INFURA_ID}`)
+      },
+      network_id: 3,
+      //from: "" adr à partir de laquelle le contrat va être déployé 
+    }
+  },
+  compilers: {
+    solc: {
+       version: ">=0.6.0 <0.8.0",    // Fetch exact version from solc-bin (default: truffle's version)
+      // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
+      // settings: {          // See the solidity docs for advice about optimization and evmVersion
+      //  optimizer: {
+      //    enabled: false,
+      //    runs: 200
+      //  },
+      //  evmVersion: "byzantium"
+      // }
+    }
+  }
+};
