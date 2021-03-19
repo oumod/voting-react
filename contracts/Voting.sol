@@ -160,12 +160,14 @@ import "./Ownable.sol";
     function tally() public onlyOwner {
         require(workflowStatus == WorkflowStatus.VotingSessionEnded, "Vote pas termine");
         uint maxVoteCount = 0;
+        uint winningProposalIdLocal = 0;
         for (uint i = 0; i < proposals.length; i++) {
             if (proposals[i].voteCount > maxVoteCount) {
-                winningProposalId = i;
+                winningProposalIdLocal = i;
                 maxVoteCount = proposals[i].voteCount;
             }
         }
+        winningProposalId = winningProposalIdLocal;
         workflowStatus = WorkflowStatus.VotesTallied;
         emit VotesTallied();
         emit WorkflowStatusChange(WorkflowStatus.VotingSessionEnded, WorkflowStatus.VotesTallied);
