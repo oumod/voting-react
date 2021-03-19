@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.0 <0.8.0;
+
 pragma experimental ABIEncoderV2;
 
+//import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Ownable.sol";
 
 /**
@@ -43,6 +45,10 @@ import "./Ownable.sol";
         uint voteCount;
     }
 
+    struct WhitelistArray {
+        address Address;
+    }
+
     // status du contrat
     WorkflowStatus public workflowStatus;
     // pour stocker les électeurs et leurs votes
@@ -52,7 +58,7 @@ import "./Ownable.sol";
     // pour enregistrer les propositions
     Proposal[] private proposals;
       // pour get all users in whitelist, impossible de return un mapping?
-    address[] private whitelistArray;
+    WhitelistArray[] private whitelistArray;
     // index de la proposition ayant reçu le plus de votes, commence à 0
     uint public winningProposalId;
 
@@ -72,7 +78,7 @@ import "./Ownable.sol";
         require(workflowStatus == WorkflowStatus.RegisteringVoters, "La phase d\'enregistrement des electeurs est terminee !");
       //ajouter le fait de ne pas pouvoir ajouter une adr 2x
             voters.push(Voter(true, false, 0, false));
-            whitelistArray.push(_address);
+            whitelistArray.push(WhitelistArray(_address));
             whitelist[_address] = voters.length;
             emit VoterRegistered(_address); 
         
@@ -99,7 +105,7 @@ import "./Ownable.sol";
       /**
      * @notice Permet de récupérer la liste des propositions.
      */
-    function getWhitelist() public  view returns (address[] memory){
+    function getWhitelist() public  view returns (WhitelistArray[] memory){
        // require(workflowStatus != WorkflowStatus.RegisteringVoters, "La phase d\'enregistrement des propositions n\'a pas commence !");
         return whitelistArray;
     }
