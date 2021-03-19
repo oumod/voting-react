@@ -45,10 +45,7 @@ import "./Ownable.sol";
 
     // status du contrat
     WorkflowStatus public workflowStatus;
-    // pour stocker les électeurs et leurs votes
-    Voter[] private voters;
-    // pour enregistrer les électeurs (adresse Ethereum => id, id commence à 1)
-    mapping (address => uint) private whitelist;
+    mapping (address => Voter) private whitelist;
     // pour enregistrer les propositions
     Proposal[] private proposals;
       // pour get all users in whitelist, impossible de return un mapping?
@@ -57,7 +54,7 @@ import "./Ownable.sol";
     uint public winningProposalId;
 
     modifier isWhitelisted() {
-        require(whitelist[msg.sender] > 0, "Vous n\'etes pas inscrit !");
+        require(whitelist[msg.sender].isRegistered, "Vous n\'etes pas inscrit !");
         _;
     }
 
@@ -70,10 +67,9 @@ import "./Ownable.sol";
     */
     function register(address _address) public onlyOwner {
         require(workflowStatus == WorkflowStatus.RegisteringVoters, "La phase d\'enregistrement des electeurs est terminee !");
-        require(whitelist[msg.sender] == 0, "Adresse enregistree !");
-        voters.push(Voter(true, false, false, 0));
+        require(!whitelist[msg.sender].isRegistered, "Adresse deja enregistree !");
         whitelistArray.push(_address);
-        whitelist[_address] = voters.length;
+        whitelist[_address] = Voter(true, false, false, 0);
         emit VoterRegistered(_address);
         
     }
@@ -114,10 +110,9 @@ import "./Ownable.sol";
      */
     function registerProposal(string memory _description) public isWhitelisted {
         require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "La phase d\'enregistrement des propositions n\'est pas en cours !");
-        uint voterId = whitelist[msg.sender] - 1;
-        require(voters[voterId].hasProposed == false, "Vous avez deja fait une proposition !");
+        require(whitelist[msg.sender].hasProposed == false, "Vous avez deja fait une proposition !");
         proposals.push(Proposal(_description, 0));
-        voters[voterId].hasProposed = true;
+        whitelist[msg.sender].hasProposed = true;
         emit ProposalRegistered(proposals.length);
     }
 
@@ -146,11 +141,10 @@ import "./Ownable.sol";
      */
     function vote(uint _proposalId) public isWhitelisted {
         require(workflowStatus == WorkflowStatus.VotingSessionStarted, "La session de vote n'est pas en cours !");
-        uint voterId = whitelist[msg.sender] - 1;
-        require(voters[voterId].hasVoted == false, "Vous avez deja vote !");
+        require(whitelist[msg.sender].hasVoted == false, "Vous avez deja vote !");
         require(_proposalId < proposals.length , "Id de proposition invalide");
-        voters[voterId].votedProposalId = _proposalId;
-        voters[voterId].hasVoted = true;
+        whitelist[msg.sender].votedProposalId = _proposalId;
+        whitelist[msg.sender].hasVoted = true;
         proposals[_proposalId].voteCount++;
         emit Voted(msg.sender, _proposalId);
     }
