@@ -105,7 +105,7 @@ import "./Ownable.sol";
      */
     function registerProposal(string memory _description) public isWhitelisted {
         require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "Enregistrement des propositions pas en cours");
-        require(whitelist[msg.sender].hasProposed == false, "Proposition deja faite");
+        require(!whitelist[msg.sender].hasProposed, "Proposition deja faite");
         proposals.push(Proposal(_description, 0));
         whitelist[msg.sender].hasProposed = true;
         emit ProposalRegistered(proposals.length);
@@ -136,7 +136,7 @@ import "./Ownable.sol";
      */
     function vote(uint _proposalId) public isWhitelisted {
         require(workflowStatus == WorkflowStatus.VotingSessionStarted, "Vote pas en cours");
-        require(whitelist[msg.sender].hasVoted == false, "Deja vote");
+        require(!whitelist[msg.sender].hasVoted, "Deja vote");
         require(_proposalId < proposals.length , "Id de proposition invalide");
         whitelist[msg.sender].votedProposalId = _proposalId;
         whitelist[msg.sender].hasVoted = true;
