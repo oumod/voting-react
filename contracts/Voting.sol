@@ -34,8 +34,8 @@ import "./Ownable.sol";
     struct Voter {
         bool isRegistered;
         bool hasVoted;
+        bool hasProposed; // amélioration par rapport à l'énoncé
         uint votedProposalId;
-        bool hasProposed;
     }
 
     struct Proposal {
@@ -71,7 +71,7 @@ import "./Ownable.sol";
     function register(address _address) public onlyOwner {
         require(workflowStatus == WorkflowStatus.RegisteringVoters, "La phase d\'enregistrement des electeurs est terminee !");
         require(whitelist[msg.sender] == 0, "Adresse enregistree !");
-        voters.push(Voter(true, false, 0, false));
+        voters.push(Voter(true, false, false, 0));
         whitelistArray.push(_address);
         whitelist[_address] = voters.length;
         emit VoterRegistered(_address);
