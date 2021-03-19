@@ -58,10 +58,6 @@ import "./Ownable.sol";
         _;
     }
 
-    constructor() public {
-        workflowStatus = WorkflowStatus.RegisteringVoters;
-    }
-
    /**
     * @notice L'administrateur du vote enregistre une liste blanche d'électeurs identifiés par leur adresse Ethereum.
     */
