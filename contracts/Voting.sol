@@ -54,7 +54,7 @@ import "./Ownable.sol";
     uint public winningProposalId;
 
     modifier isWhitelisted() {
-        require(whitelist[msg.sender].isRegistered, "Vous n\'etes pas inscrit !");
+        require(whitelist[msg.sender].isRegistered, "Pas inscrit");
         _;
     }
 
@@ -62,7 +62,7 @@ import "./Ownable.sol";
     * @notice L'administrateur du vote enregistre une liste blanche d'électeurs identifiés par leur adresse Ethereum.
     */
     function register(address _address) public onlyOwner {
-        require(workflowStatus == WorkflowStatus.RegisteringVoters, "La phase d\'enregistrement des electeurs est terminee !");
+        require(workflowStatus == WorkflowStatus.RegisteringVoters, "Enregistrement des electeurs termine");
         require(!whitelist[msg.sender].isRegistered, "Adresse deja enregistree !");
         whitelistArray.push(_address);
         whitelist[_address] = Voter(true, false, false, 0);
@@ -74,7 +74,7 @@ import "./Ownable.sol";
      * @notice L'administrateur du vote commence la session d'enregistrement de la proposition.
      */
     function startProposalsRegistration() public  onlyOwner {
-        require(workflowStatus == WorkflowStatus.RegisteringVoters, "La phase d\'enregistrement des propositions ne peut etre demarree !");
+        require(workflowStatus == WorkflowStatus.RegisteringVoters, "Enregistrement des propositions termine");
         workflowStatus = WorkflowStatus.ProposalsRegistrationStarted;
         emit ProposalsRegistrationStarted();
         emit WorkflowStatusChange(WorkflowStatus.RegisteringVoters, WorkflowStatus.ProposalsRegistrationStarted);
@@ -84,7 +84,7 @@ import "./Ownable.sol";
      * @notice Permet de récupérer la liste des propositions.
      */
     function getProposal() public  view returns (Proposal[] memory){
-        require(workflowStatus != WorkflowStatus.RegisteringVoters, "La phase d\'enregistrement des propositions n\'a pas commence !");
+        require(workflowStatus != WorkflowStatus.RegisteringVoters, "Enregistrement des propositions pas en cours");
         return proposals;
     }
 
@@ -92,7 +92,6 @@ import "./Ownable.sol";
      * @notice Permet de récupérer la liste des propositions.
      */
     function getWhitelist() public  view returns (address[] memory){
-       // require(workflowStatus != WorkflowStatus.RegisteringVoters, "La phase d\'enregistrement des propositions n\'a pas commence !");
         return whitelistArray;
     }
 
@@ -105,8 +104,8 @@ import "./Ownable.sol";
      * @notice Les électeurs inscrits sont autorisés à enregistrer leurs propositions pendant que la session d'enregistrement est active.
      */
     function registerProposal(string memory _description) public isWhitelisted {
-        require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "La phase d\'enregistrement des propositions n\'est pas en cours !");
-        require(whitelist[msg.sender].hasProposed == false, "Vous avez deja fait une proposition !");
+        require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "Enregistrement des propositions pas en cours");
+        require(whitelist[msg.sender].hasProposed == false, "Proposition deja faite");
         proposals.push(Proposal(_description, 0));
         whitelist[msg.sender].hasProposed = true;
         emit ProposalRegistered(proposals.length);
@@ -116,7 +115,7 @@ import "./Ownable.sol";
      * @notice  L'administrateur de vote met fin à la session d'enregistrement des propositions.
      */
     function endProposalsRegistration() public  onlyOwner {
-        require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "La phase d'enregistrement des propositions n'est pas en cours !");
+        require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "Enregistrement des propositions pas en cours");
         workflowStatus = WorkflowStatus.ProposalsRegistrationEnded;
         emit ProposalsRegistrationEnded();
         emit WorkflowStatusChange(WorkflowStatus.ProposalsRegistrationStarted, WorkflowStatus.ProposalsRegistrationEnded);
@@ -126,7 +125,7 @@ import "./Ownable.sol";
      * @notice L'administrateur du vote commence la session de vote.
      */
     function startVotingSession() public  onlyOwner {
-        require(workflowStatus == WorkflowStatus.ProposalsRegistrationEnded, "La session de vote ne peut etre demarree !");
+        require(workflowStatus == WorkflowStatus.ProposalsRegistrationEnded, "Enregistrement des propositions pas terminee");
         workflowStatus = WorkflowStatus.VotingSessionStarted;
         emit VotingSessionStarted();
         emit WorkflowStatusChange(WorkflowStatus.ProposalsRegistrationEnded, WorkflowStatus.VotingSessionStarted);
@@ -136,8 +135,8 @@ import "./Ownable.sol";
      * @notice Les électeurs inscrits votent pour leurs propositions préférées.
      */
     function vote(uint _proposalId) public isWhitelisted {
-        require(workflowStatus == WorkflowStatus.VotingSessionStarted, "La session de vote n'est pas en cours !");
-        require(whitelist[msg.sender].hasVoted == false, "Vous avez deja vote !");
+        require(workflowStatus == WorkflowStatus.VotingSessionStarted, "Vote pas en cours");
+        require(whitelist[msg.sender].hasVoted == false, "Deja vote");
         require(_proposalId < proposals.length , "Id de proposition invalide");
         whitelist[msg.sender].votedProposalId = _proposalId;
         whitelist[msg.sender].hasVoted = true;
@@ -149,7 +148,7 @@ import "./Ownable.sol";
      * @notice L'administrateur du vote met fin à la session de vote.
      */
     function endVotingSession() public  onlyOwner {
-        require(workflowStatus == WorkflowStatus.VotingSessionStarted, "La session de vote n\'est pas en cours !");
+        require(workflowStatus == WorkflowStatus.VotingSessionStarted, "Vote pas en cours");
         workflowStatus = WorkflowStatus.VotingSessionEnded;
         emit VotingSessionEnded();
         emit WorkflowStatusChange(WorkflowStatus.VotingSessionStarted, WorkflowStatus.VotingSessionEnded);
@@ -159,7 +158,7 @@ import "./Ownable.sol";
      * @notice L'administrateur du vote comptabilise les votes.
      */
     function tally() public onlyOwner {
-        require(workflowStatus == WorkflowStatus.VotingSessionEnded, "La session de vote n\'est pas terminee !");
+        require(workflowStatus == WorkflowStatus.VotingSessionEnded, "Vote pas termine");
         uint maxVoteCount = 0;
         for (uint i = 0; i < proposals.length; i++) {
             if (proposals[i].voteCount > maxVoteCount) {
