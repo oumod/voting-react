@@ -61,12 +61,12 @@ import "./Ownable.sol";
    /**
     * @notice L'administrateur du vote enregistre une liste blanche d'électeurs identifiés par leur adresse Ethereum.
     */
-    function register(address _address) public onlyOwner {
+    function register(address addr) public onlyOwner {
         require(workflowStatus == WorkflowStatus.RegisteringVoters, "Enregistrement des electeurs termine");
         require(!whitelist[msg.sender].isRegistered, "Adresse deja enregistree !");
-        whitelistArray.push(_address);
-        whitelist[_address] = Voter(true, false, false, 0);
-        emit VoterRegistered(_address);
+        whitelistArray.push(addr);
+        whitelist[addr] = Voter(true, false, false, 0);
+        emit VoterRegistered(addr);
         
     }
 
@@ -103,10 +103,10 @@ import "./Ownable.sol";
     /**
      * @notice Les électeurs inscrits sont autorisés à enregistrer leurs propositions pendant que la session d'enregistrement est active.
      */
-    function registerProposal(string memory _description) public isWhitelisted {
+    function registerProposal(string memory description) public isWhitelisted {
         require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "Enregistrement des propositions pas en cours");
         require(!whitelist[msg.sender].hasProposed, "Proposition deja faite");
-        proposals.push(Proposal(_description, 0));
+        proposals.push(Proposal(description, 0));
         whitelist[msg.sender].hasProposed = true;
         emit ProposalRegistered(proposals.length);
     }
@@ -134,14 +134,14 @@ import "./Ownable.sol";
     /**
      * @notice Les électeurs inscrits votent pour leurs propositions préférées.
      */
-    function vote(uint _proposalId) public isWhitelisted {
+    function vote(uint proposalId) public isWhitelisted {
         require(workflowStatus == WorkflowStatus.VotingSessionStarted, "Vote pas en cours");
         require(!whitelist[msg.sender].hasVoted, "Deja vote");
-        require(_proposalId < proposals.length , "Id de proposition invalide");
-        whitelist[msg.sender].votedProposalId = _proposalId;
+        require(proposalId < proposals.length , "Id de proposition invalide");
+        whitelist[msg.sender].votedProposalId = proposalId;
         whitelist[msg.sender].hasVoted = true;
-        proposals[_proposalId].voteCount++;
-        emit Voted(msg.sender, _proposalId);
+        proposals[proposalId].voteCount++;
+        emit Voted(msg.sender, proposalId);
     }
 
     /**
