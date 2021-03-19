@@ -61,7 +61,7 @@ import "./Ownable.sol";
    /**
     * @notice L'administrateur du vote enregistre une liste blanche d'électeurs identifiés par leur adresse Ethereum.
     */
-    function register(address addr) public onlyOwner {
+    function register(address addr) external onlyOwner {
         require(workflowStatus == WorkflowStatus.RegisteringVoters, "Enregistrement des electeurs termine");
         require(!whitelist[msg.sender].isRegistered, "Adresse deja enregistree !");
         whitelistArray.push(addr);
@@ -73,7 +73,7 @@ import "./Ownable.sol";
     /**
      * @notice L'administrateur du vote commence la session d'enregistrement de la proposition.
      */
-    function startProposalsRegistration() public  onlyOwner {
+    function startProposalsRegistration() external onlyOwner {
         require(workflowStatus == WorkflowStatus.RegisteringVoters, "Enregistrement des propositions termine");
         workflowStatus = WorkflowStatus.ProposalsRegistrationStarted;
         emit ProposalsRegistrationStarted();
@@ -83,7 +83,7 @@ import "./Ownable.sol";
      /**
      * @notice Permet de récupérer la liste des propositions.
      */
-    function getProposal() public  view returns (Proposal[] memory){
+    function getProposal() external view returns (Proposal[] memory){
         require(workflowStatus != WorkflowStatus.RegisteringVoters, "Enregistrement des propositions pas en cours");
         return proposals;
     }
@@ -91,19 +91,19 @@ import "./Ownable.sol";
       /**
      * @notice Permet de récupérer la liste des propositions.
      */
-    function getWhitelist() public  view returns (address[] memory){
+    function getWhitelist() external view returns (address[] memory){
         return whitelistArray;
     }
 
 
-    function getWorkflowStatus() public view returns (WorkflowStatus) {
+    function getWorkflowStatus() external view returns (WorkflowStatus) {
          return workflowStatus;       
      }
 
     /**
      * @notice Les électeurs inscrits sont autorisés à enregistrer leurs propositions pendant que la session d'enregistrement est active.
      */
-    function registerProposal(string memory description) public isWhitelisted {
+    function registerProposal(string memory description) external isWhitelisted {
         require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "Enregistrement des propositions pas en cours");
         require(!whitelist[msg.sender].hasProposed, "Proposition deja faite");
         proposals.push(Proposal(description, 0));
@@ -114,7 +114,7 @@ import "./Ownable.sol";
     /**
      * @notice  L'administrateur de vote met fin à la session d'enregistrement des propositions.
      */
-    function endProposalsRegistration() public  onlyOwner {
+    function endProposalsRegistration() external onlyOwner {
         require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "Enregistrement des propositions pas en cours");
         workflowStatus = WorkflowStatus.ProposalsRegistrationEnded;
         emit ProposalsRegistrationEnded();
@@ -124,7 +124,7 @@ import "./Ownable.sol";
     /**
      * @notice L'administrateur du vote commence la session de vote.
      */
-    function startVotingSession() public  onlyOwner {
+    function startVotingSession() external onlyOwner {
         require(workflowStatus == WorkflowStatus.ProposalsRegistrationEnded, "Enregistrement des propositions pas terminee");
         workflowStatus = WorkflowStatus.VotingSessionStarted;
         emit VotingSessionStarted();
@@ -134,7 +134,7 @@ import "./Ownable.sol";
     /**
      * @notice Les électeurs inscrits votent pour leurs propositions préférées.
      */
-    function vote(uint proposalId) public isWhitelisted {
+    function vote(uint proposalId) external isWhitelisted {
         require(workflowStatus == WorkflowStatus.VotingSessionStarted, "Vote pas en cours");
         require(!whitelist[msg.sender].hasVoted, "Deja vote");
         require(proposalId < proposals.length , "Id de proposition invalide");
@@ -147,7 +147,7 @@ import "./Ownable.sol";
     /**
      * @notice L'administrateur du vote met fin à la session de vote.
      */
-    function endVotingSession() public  onlyOwner {
+    function endVotingSession() external onlyOwner {
         require(workflowStatus == WorkflowStatus.VotingSessionStarted, "Vote pas en cours");
         workflowStatus = WorkflowStatus.VotingSessionEnded;
         emit VotingSessionEnded();
@@ -157,7 +157,7 @@ import "./Ownable.sol";
     /**
      * @notice L'administrateur du vote comptabilise les votes.
      */
-    function tally() public onlyOwner {
+    function tally() external onlyOwner {
         require(workflowStatus == WorkflowStatus.VotingSessionEnded, "Vote pas termine");
         uint maxVoteCount = 0;
         uint winningProposalIdLocal = 0;
