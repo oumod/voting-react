@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.6.0 <0.8.0;
+pragma solidity 0.6.11;
 pragma experimental ABIEncoderV2;
 
 /**
@@ -55,7 +55,7 @@ pragma experimental ABIEncoderV2;
     /**
      * @notice Initialise le deployer comme étant l'admin.
      */
-    constructor () {
+    constructor () public {
         admin = msg.sender;
     }
 
