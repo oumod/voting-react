@@ -2,15 +2,13 @@
 pragma solidity >=0.6.0 <0.8.0;
 pragma experimental ABIEncoderV2;
 
-import "./Ownable.sol";
-
 /**
  * @title Voting
  * @author groupe 5 : yann, louisplessis, oudom
  * @notice Défi 1
  * @dev administrateur du vote = owner
  */
- contract Voting is Ownable {
+ contract Voting {
     // Les différentes phases du vote se succèdant
     enum WorkflowStatus {
         RegisteringVoters, // 0
@@ -52,6 +50,19 @@ import "./Ownable.sol";
     address[] private whitelistArray;
     // index de la proposition ayant reçu le plus de votes, commence à 0
     uint public winningProposalId;
+    address private admin;
+
+    /**
+     * @notice Initialise le deployer comme étant l'admin.
+     */
+    constructor () {
+        admin = msg.sender;
+    }
+
+    modifier onlyAdmin() {
+        require(admin == msg.sender, "Admin requis");
+        _;
+    }
 
     modifier isWhitelisted() {
         require(whitelist[msg.sender].isRegistered, "Pas inscrit");
@@ -61,7 +72,7 @@ import "./Ownable.sol";
    /**
     * @notice L'administrateur du vote enregistre une liste blanche d'électeurs identifiés par leur adresse Ethereum.
     */
-    function register(address addr) external onlyOwner {
+    function register(address addr) external onlyAdmin {
         require(workflowStatus == WorkflowStatus.RegisteringVoters, "Enregistrement des electeurs termine");
         require(!whitelist[msg.sender].isRegistered, "Adresse deja enregistree !");
         whitelistArray.push(addr);
@@ -73,7 +84,7 @@ import "./Ownable.sol";
     /**
      * @notice L'administrateur du vote commence la session d'enregistrement de la proposition.
      */
-    function startProposalsRegistration() external onlyOwner {
+    function startProposalsRegistration() external onlyAdmin {
         require(workflowStatus == WorkflowStatus.RegisteringVoters, "Enregistrement des propositions termine");
         workflowStatus = WorkflowStatus.ProposalsRegistrationStarted;
         emit ProposalsRegistrationStarted();
@@ -114,7 +125,7 @@ import "./Ownable.sol";
     /**
      * @notice  L'administrateur de vote met fin à la session d'enregistrement des propositions.
      */
-    function endProposalsRegistration() external onlyOwner {
+    function endProposalsRegistration() external onlyAdmin {
         require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "Enregistrement des propositions pas en cours");
         workflowStatus = WorkflowStatus.ProposalsRegistrationEnded;
         emit ProposalsRegistrationEnded();
@@ -124,7 +135,7 @@ import "./Ownable.sol";
     /**
      * @notice L'administrateur du vote commence la session de vote.
      */
-    function startVotingSession() external onlyOwner {
+    function startVotingSession() external onlyAdmin {
         require(workflowStatus == WorkflowStatus.ProposalsRegistrationEnded, "Enregistrement des propositions pas terminee");
         workflowStatus = WorkflowStatus.VotingSessionStarted;
         emit VotingSessionStarted();
@@ -147,7 +158,7 @@ import "./Ownable.sol";
     /**
      * @notice L'administrateur du vote met fin à la session de vote.
      */
-    function endVotingSession() external onlyOwner {
+    function endVotingSession() external onlyAdmin {
         require(workflowStatus == WorkflowStatus.VotingSessionStarted, "Vote pas en cours");
         workflowStatus = WorkflowStatus.VotingSessionEnded;
         emit VotingSessionEnded();
@@ -157,7 +168,7 @@ import "./Ownable.sol";
     /**
      * @notice L'administrateur du vote comptabilise les votes.
      */
-    function tally() external onlyOwner {
+    function tally() external onlyAdmin {
         require(workflowStatus == WorkflowStatus.VotingSessionEnded, "Vote pas termine");
         uint maxVoteCount = 0;
         uint winningProposalIdLocal = 0;
