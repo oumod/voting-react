@@ -70,6 +70,13 @@ pragma experimental ABIEncoderV2;
     }
 
    /**
+    * @notice Retourne l'adresse de l'admin/owner.
+    */
+    function owner() external returns(address) {
+        return admin;
+    }
+
+   /**
     * @notice L'administrateur du vote enregistre une liste blanche d'électeurs identifiés par leur adresse Ethereum.
     */
     function register(address addr) external onlyAdmin {
