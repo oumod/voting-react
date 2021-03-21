@@ -81,7 +81,7 @@ pragma experimental ABIEncoderV2;
     */
     function register(address addr) external onlyAdmin {
         require(workflowStatus == WorkflowStatus.RegisteringVoters, "Enregistrement des electeurs termine");
-        require(!whitelist[msg.sender].isRegistered, "Adresse deja enregistree !");
+        require(!whitelist[addr].isRegistered, "Adresse deja enregistree !");
         whitelistArray.push(addr);
         whitelist[addr] = Voter(true, false, false, 0);
         emit VoterRegistered(addr);
