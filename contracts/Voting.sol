@@ -41,17 +41,13 @@ pragma experimental ABIEncoderV2;
         uint voteCount;
     }
 
-    struct WhitelistArray {
-        address Address;
-    }
-
     // status du contrat
     WorkflowStatus public workflowStatus;
     mapping (address => Voter) private whitelist;
     // pour enregistrer les propositions
     Proposal[] private proposals;
       // pour get all users in whitelist, impossible de return un mapping?
-    WhitelistArray[] private whitelistArray;
+    address[] private whitelistArray;
     // index de la proposition ayant reçu le plus de votes, commence à 0
     uint public winningProposalId;
     address private admin;
@@ -79,7 +75,7 @@ pragma experimental ABIEncoderV2;
     function register(address addr) external onlyAdmin {
         require(workflowStatus == WorkflowStatus.RegisteringVoters, "Enregistrement des electeurs termine");
         require(!whitelist[msg.sender].isRegistered, "Adresse deja enregistree !");
-        whitelistArray.push(WhitelistArray(addr));
+        whitelistArray.push(addr);
         whitelist[addr] = Voter(true, false, false, 0);
         emit VoterRegistered(addr);
     }
@@ -94,7 +90,7 @@ pragma experimental ABIEncoderV2;
         emit WorkflowStatusChange(WorkflowStatus.RegisteringVoters, WorkflowStatus.ProposalsRegistrationStarted);
     }
 
-     /**
+    /**
      * @notice Permet de récupérer la liste des propositions.
      */
     function getProposal() external view returns (Proposal[] memory){
@@ -102,10 +98,10 @@ pragma experimental ABIEncoderV2;
         return proposals;
     }
 
-      /**
+    /**
      * @notice Permet de récupérer la liste des propositions.
      */
-    function getWhitelist() public  view returns (WhitelistArray[] memory){
+    function getWhitelist() public  view returns (address[] memory){
         return whitelistArray;
     }
 
