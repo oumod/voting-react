@@ -1,0 +1,23 @@
+{
+  "name": "voting",
+  "version": "1.0.0",
+  "description": "Defi Voting",
+  "main": "truffle-config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oumod/voting-react.git"
+  },
+  "author": "groupe 5 : yann, louisplessis, oudom",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/oumod/voting-react/issues"
+  },
+  "homepage": "https://github.com/oumod/voting-react#readme",
+  "dependencies": {
+    "@truffle/hdwallet-provider": "^1.2.4",
+    "dotenv": "^8.2.0"
+  }
+}

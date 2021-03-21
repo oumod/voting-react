@@ -50,7 +50,10 @@ class App extends Component {
 
       
       const contractWorkflowStatus = await contract.methods.getWorkflowStatus().call();
+<<<<<<< HEAD
       
+=======
+>>>>>>> a30febc66da8b082724e4f2adf3223344317db3c
       //contractWorkflowStatus = parseInt(contractWorkflowStatus);
       let tmp_wf = contractWorkflowStatus;
       let workflowStatusDescription = "";
@@ -196,6 +199,7 @@ class App extends Component {
 
     if(context.state.contractWorkflowStatus == 0){
       let response = await contract.methods.startProposalsRegistration().call();
+<<<<<<< HEAD
       console.log('start proposal registration', response);
       //let events = contract.events.WorkflowStatusChange();
       //console.log("events : ",events);
@@ -219,6 +223,18 @@ class App extends Component {
       const contractWorkflowStatus = await contract.methods.getWorkflowStatus().call();
       console.log("workflow", contractWorkflowStatus);  
       context.setState({ contractWorkflowStatus});
+=======
+      console.log('start proposal regist', response);
+      let events = contract.events.WorkflowStatusChange();
+      console.log("events : ",events);
+
+
+      contract.getPastEvents('WorkflowStatusChange', {filter: {_from: accounts[0]}, fromBlock: 0, toBlock: 'latest' }, function(error, events){if(!error)console.log(events)});
+
+
+
+      //context.setState({ getWorkflowStatus: response , workflowStatusDescription: response});
+>>>>>>> a30febc66da8b082724e4f2adf3223344317db3c
 
     }else if(context.state.contractWorkflowStatus == 1){
       let response = await contract.methods.getProposal().call();
@@ -233,12 +249,21 @@ class App extends Component {
 
     }else if(context.state.contractWorkflowStatus == 4){
       let response = await contract.methods.getProposal().call();
+<<<<<<< HEAD
 
 
     }else if(context.state.contractWorkflowStatus == 5){
       let response = await contract.methods.getProposal().call();
 
 
+=======
+
+
+    }else if(context.state.contractWorkflowStatus == 5){
+      let response = await contract.methods.getProposal().call();
+
+
+>>>>>>> a30febc66da8b082724e4f2adf3223344317db3c
     }
 
     // Récupérer la liste des comptes autorisés

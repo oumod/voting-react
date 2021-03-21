@@ -11,7 +11,6 @@ module.exports = {
       host: "localhost",
       port: 7545,
       network_id: 5777,
-      from : "0xd7c60b532C28e74D672F2e3f040cA9A5E0b7139E"
     },
     ropsten: {
       provider: function() {
@@ -23,7 +22,7 @@ module.exports = {
   },
   compilers: {
     solc: {
-       version: ">=0.6.0 <0.8.0",    // Fetch exact version from solc-bin (default: truffle's version)
+       version: "0.6.11",    // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       // settings: {          // See the solidity docs for advice about optimization and evmVersion
       //  optimizer: {
