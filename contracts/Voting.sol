@@ -108,7 +108,7 @@ pragma experimental ABIEncoderV2;
     /**
      * @notice Permet de récupérer la liste des propositions.
      */
-    function getWhitelist() public  view returns (address[] memory){
+    function getWhitelist() external view returns (address[] memory){
         return whitelistArray;
     }
 
