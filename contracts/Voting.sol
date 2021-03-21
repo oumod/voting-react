@@ -1,17 +1,7 @@
 // SPDX-License-Identifier: MIT
-<<<<<<< HEAD
-pragma solidity >=0.6.0 <0.8.0;
-
-pragma experimental ABIEncoderV2;
-
-//import "@openzeppelin/contracts/access/Ownable.sol";
-import "./Ownable.sol";
-
-=======
 pragma solidity 0.6.11;
 pragma experimental ABIEncoderV2;
 
->>>>>>> a30febc66da8b082724e4f2adf3223344317db3c
 /**
  * @title Voting
  * @author groupe 5 : yann, louisplessis, oudom
@@ -51,17 +41,13 @@ pragma experimental ABIEncoderV2;
         uint voteCount;
     }
 
-    struct WhitelistArray {
-        address Address;
-    }
-
     // status du contrat
     WorkflowStatus public workflowStatus;
     mapping (address => Voter) private whitelist;
     // pour enregistrer les propositions
     Proposal[] private proposals;
       // pour get all users in whitelist, impossible de return un mapping?
-    WhitelistArray[] private whitelistArray;
+    address[] private whitelistArray;
     // index de la proposition ayant reçu le plus de votes, commence à 0
     uint public winningProposalId;
     address private admin;
@@ -93,23 +79,12 @@ pragma experimental ABIEncoderV2;
    /**
     * @notice L'administrateur du vote enregistre une liste blanche d'électeurs identifiés par leur adresse Ethereum.
     */
-<<<<<<< HEAD
-    function register(address _address) public onlyOwner {
-        require(workflowStatus == WorkflowStatus.RegisteringVoters, "La phase d\'enregistrement des electeurs est terminee !");
-      //ajouter le fait de ne pas pouvoir ajouter une adr 2x
-            voters.push(Voter(true, false, 0, false));
-            whitelistArray.push(WhitelistArray(_address));
-            whitelist[_address] = voters.length;
-            emit VoterRegistered(_address); 
-        
-=======
     function register(address addr) external onlyAdmin {
         require(workflowStatus == WorkflowStatus.RegisteringVoters, "Enregistrement des electeurs termine");
         require(!whitelist[addr].isRegistered, "Adresse deja enregistree !");
         whitelistArray.push(addr);
         whitelist[addr] = Voter(true, false, false, 0);
         emit VoterRegistered(addr);
->>>>>>> a30febc66da8b082724e4f2adf3223344317db3c
     }
 
     /**
@@ -133,12 +108,7 @@ pragma experimental ABIEncoderV2;
     /**
      * @notice Permet de récupérer la liste des propositions.
      */
-<<<<<<< HEAD
-    function getWhitelist() public  view returns (WhitelistArray[] memory){
-       // require(workflowStatus != WorkflowStatus.RegisteringVoters, "La phase d\'enregistrement des propositions n\'a pas commence !");
-=======
     function getWhitelist() public  view returns (address[] memory){
->>>>>>> a30febc66da8b082724e4f2adf3223344317db3c
         return whitelistArray;
     }
 
