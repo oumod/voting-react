@@ -72,7 +72,7 @@ pragma experimental ABIEncoderV2;
    /**
     * @notice Retourne l'adresse de l'admin/owner.
     */
-    function owner() external returns(address) {
+    function owner() external view returns(address) {
         return admin;
     }
 
