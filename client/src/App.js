@@ -50,6 +50,7 @@ class App extends Component {
 
       
       const contractWorkflowStatus = await contract.methods.getWorkflowStatus().call();
+      
       //contractWorkflowStatus = parseInt(contractWorkflowStatus);
       let tmp_wf = contractWorkflowStatus;
       let workflowStatusDescription = "";
@@ -195,16 +196,29 @@ class App extends Component {
 
     if(context.state.contractWorkflowStatus == 0){
       let response = await contract.methods.startProposalsRegistration().call();
-      console.log('start proposal regist', response);
-      let events = contract.events.WorkflowStatusChange();
-      console.log("events : ",events);
+      console.log('start proposal registration', response);
+      //let events = contract.events.WorkflowStatusChange();
+      //console.log("events : ",events);
 
 
-      contract.getPastEvents('WorkflowStatusChange', {filter: {_from: accounts[0]}, fromBlock: 0, toBlock: 'latest' }, function(error, events){if(!error)console.log(events)});
+      //contract.getPastEvents('WorkflowStatusChange', {filter: {_from: accounts[0]}, fromBlock: 0, toBlock: 'latest' }, function(error, events){if(!error)console.log(events)});
 
+      contract.getPastEvents('ProposalsRegistrationStarted', {
+        filter: {_from: accounts[0]},
+        fromBlock: 0,
+        toBlock: 'latest'
+  }, function(error, events){
+          console.log("events :",events);
+      for (let i=0; i<events.length; i++) {
+          var  eventObj  =  events[i];
+          console.log('Address: '  +  eventObj.returnValues._from);
+          console.log('Greeting: ' + web3.utils.hexToAscii(eventObj.returnValues._greeting));
+      }
+  });
 
-
-      //context.setState({ getWorkflowStatus: response , workflowStatusDescription: response});
+      const contractWorkflowStatus = await contract.methods.getWorkflowStatus().call();
+      console.log("workflow", contractWorkflowStatus);  
+      context.setState({ contractWorkflowStatus});
 
     }else if(context.state.contractWorkflowStatus == 1){
       let response = await contract.methods.getProposal().call();
