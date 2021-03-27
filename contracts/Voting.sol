@@ -125,7 +125,7 @@ pragma experimental ABIEncoderV2;
         require(!whitelist[msg.sender].hasProposed, "Proposition deja faite");
         proposals.push(Proposal(description, 0));
         whitelist[msg.sender].hasProposed = true;
-        emit ProposalRegistered(proposals.length);
+        emit ProposalRegistered(proposals.length-1);
     }
 
     /**
