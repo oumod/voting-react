@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/oumod/voting-react#readme",
   "dependencies": {
+    "@openzeppelin/test-helpers": "^0.5.10",
     "@truffle/hdwallet-provider": "^1.2.4",
     "dotenv": "^8.2.0"
   }
