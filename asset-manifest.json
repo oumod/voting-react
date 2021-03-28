@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/voting-react/static/css/main.3d9e9d1a.chunk.css",
+    "main.js": "/voting-react/static/js/main.b00865d9.chunk.js",
+    "main.js.map": "/voting-react/static/js/main.b00865d9.chunk.js.map",
+    "runtime-main.js": "/voting-react/static/js/runtime-main.be82cffd.js",
+    "runtime-main.js.map": "/voting-react/static/js/runtime-main.be82cffd.js.map",
+    "static/css/2.37c27f5c.chunk.css": "/voting-react/static/css/2.37c27f5c.chunk.css",
+    "static/js/2.db3e547e.chunk.js": "/voting-react/static/js/2.db3e547e.chunk.js",
+    "static/js/2.db3e547e.chunk.js.map": "/voting-react/static/js/2.db3e547e.chunk.js.map",
+    "index.html": "/voting-react/index.html",
+    "precache-manifest.5ac2e7c15bd9448d110e6caaa4aaaae7.js": "/voting-react/precache-manifest.5ac2e7c15bd9448d110e6caaa4aaaae7.js",
+    "service-worker.js": "/voting-react/service-worker.js",
+    "static/css/2.37c27f5c.chunk.css.map": "/voting-react/static/css/2.37c27f5c.chunk.css.map",
+    "static/css/main.3d9e9d1a.chunk.css.map": "/voting-react/static/css/main.3d9e9d1a.chunk.css.map"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.be82cffd.js",
+    "static/css/2.37c27f5c.chunk.css",
+    "static/js/2.db3e547e.chunk.js",
+    "static/css/main.3d9e9d1a.chunk.css",
+    "static/js/main.b00865d9.chunk.js"
+  ]
+}
