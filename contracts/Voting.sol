@@ -25,7 +25,7 @@ pragma experimental ABIEncoderV2;
     event ProposalRegistered(uint proposalId);
     event VotingSessionStarted();
     event VotingSessionEnded();
-    event Voted (address voter, uint proposalId);
+    event Voted(address voter, uint proposalId);
     event VotesTallied();
     event WorkflowStatusChange(WorkflowStatus previousStatus, WorkflowStatus newStatus);
 
