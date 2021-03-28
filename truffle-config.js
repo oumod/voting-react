@@ -18,6 +18,12 @@ module.exports = {
       },
       network_id: 3,
       //from: "" adr à partir de laquelle le contrat va être déployé 
+    },
+    kovan: {
+      provider: function() {
+        return new HDWalletProvider(`${process.env.MNEMONIC}`, `https://kovan.infura.io/v3/${process.env.INFURA_ID}`)
+      },
+      network_id: 42,
     }
   },
   compilers: {
