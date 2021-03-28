@@ -10,6 +10,67 @@ contract("Voting", accounts => {
         this.votingInstance = await Voting.new({ from: admin });
     });
 
+    // Test de function owner() external view returns(address)
+    it("owner() retourne le owner (=admin)", async () => {
+        // GIVEN
+        const owner = admin;
+
+        // WHEN
+        const addr = await this.votingInstance.owner();
+
+        // THEN
+        expect(addr).to.equal(owner);
+    });
+
+    // function register(address register) external onlyAdmin
+    it("register(addr) doit revert si le sender n'est pas l'admin", async () => {
+        // GIVEN
+        const sender = electeur1;
+        const addr = admin;
+
+        // WHEN
+        // THEN
+        await expectRevert(this.votingInstance.register(addr, { from: sender }), "Admin requis");
+    });
+    it("register(addr) doit revert si le workflow n'est pas au status RegisteringVoters", async () => {
+        // GIVEN
+        const sender = admin;
+        const addr = admin;
+        await this.votingInstance.startProposalsRegistration({ from: sender });
+        const status = await this.votingInstance.getWorkflowStatus({ from: sender });
+
+        // WHEN
+        // THEN
+        expect(status).to.be.bignumber.not.equal(new BN(0));
+        await expectRevert(this.votingInstance.register(addr, { from: sender }), "Enregistrement des electeurs termine");
+    });
+    it("register(addr) doit revert si addr est déjà enregistrée", async () => {
+        // GIVEN
+        const sender = admin;
+        const addr = admin;
+        // Enregistrement de l'adresse de l'admun ne 1ère fois
+        await this.votingInstance.register(addr, { from: sender })
+
+        // WHEN
+        // THEN
+        await expectRevert(this.votingInstance.register(addr, { from: sender }), "Adresse deja enregistree !");
+    });
+    it("register(addr) doit ajouter addr dans la whitelisté et émettre 1 évènement VoterRegistered", async () => {
+        // GIVEN
+        const sender = admin;
+        const addr = admin;
+
+        // WHEN
+        const receipt = await this.votingInstance.register(addr, { from: sender });
+
+        // THEN
+        const whitelist = await this.votingInstance.getWhitelist();
+        expect(whitelist[0]).to.be.equal(addr);
+        expectEvent(receipt, 'VoterRegistered', {
+            voterAddress: addr
+        });
+    });
+
     // Test de function getWhitelist() external view returns (address[] memory)
     it("getWhitelist() doit retourner un tableau vide", async () => {
         // GIVEN
@@ -115,7 +176,7 @@ contract("Voting", accounts => {
         const proposals = await this.votingInstance.getProposal();
         expect(proposals.length).to.equal(1);
         expectEvent(receipt, 'ProposalRegistered', {
-            proposalId: "1",
+            proposalId: "0",
         });
     });
     it("registerProposal(description) doit revert si un électeur a déjà fait une proposition", async () => {
